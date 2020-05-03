@@ -26,7 +26,7 @@ In such cases, following approaches addresses capturing the changes off the SQL 
 
 ## Approach 2: SQL Database Trigger
 
-[\[Diagram for approach 2: CDC with DB trigger\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-db-trigger.jpg?raw=true)
+![\[Diagram for approach 2: CDC with DB trigger\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-db-trigger.jpg?raw=true)
 
 1. In this approach, the application writes  (insert, update, delete)  into the tables to be captured.
 Triggers are created for the tables to be tracked. The trigger gets the id, operation and timestamp into a table  say <CapturedTableName>_CDC.
@@ -40,7 +40,7 @@ Lets see next approach.
 
 ## Approach 3: SQL CDC
 
-[\[Diagram for approach 3: CDC with SQL CDC\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-app.jpg?raw=true)
+![\[Diagram for approach 3: CDC with SQL CDC\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-cdc.jpg?raw=true)
 
 Similar to approach 2, the application writes  (insert, update, delete)  into the tables to be captured.
 CDC is enabled at DB and table level using system stored procedure sys.sp_cdc_enable_db and sys.sp_cdc_enable_table.
@@ -62,7 +62,7 @@ More details are here at [SQL CDC](https://docs.microsoft.com/en-us/sql/relation
 
 ## Approach 4: SQL Server Broker Service (SSSB)
 
-[\[Diagram for approach 4: CDC with SQL SSB\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-sssb.jpg?raw=true)
+![\[Diagram for approach 4: CDC with SQL SSB\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-sssb.jpg?raw=true)
 
 1. Similar to approach 2 or 3, the application writes (insert, update, delete) into the tables to be captured. 
 2. In this approach, SQL Service Broker is enabled and SQL broker objects viz Message Types, Contracts, Queues, Services, Trigger can be created and configured via a stable  .NET Library - SqlTableDepenency
