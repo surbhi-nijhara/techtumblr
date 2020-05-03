@@ -12,7 +12,7 @@ We have more than one way to approach this and this is a guide which will help g
 
 The following diagram shows the key components of the configuration for this scenario\.
 
-![\[Diagram for approach 1: CDC with App\]]()
+![\[Diagram for approach 1: CDC with App\]](ms-sql-guide/diag_source/ms-sql-cdc-app.jpg)
 
 1. In this approach, as soon as an application service writes((insert, update, delete) into tables to be captured, the same application also publishes an event  into an event bus. The event may just contain id of the template, the operation(op) and timestamp. Alternatively, one may approach publishing the entire row if there is no need to join data from other tables. It will depend on your specific requirement.
 2. A SyncApp (a custom built transformation tool) will be subscribed to the event bus.
@@ -26,7 +26,7 @@ In such cases, following approaches addresses capturing the changes off the SQL 
 
 ## Approach 2: SQL Database Trigger
 
-
+[\[Diagram for approach 1: CDC with DB trigger\]](ms-sql-guide/diag_source/ms-sql-cdc-db-trigger.jpg)
 
 1. In this approach, the application writes  (insert, update, delete)  into the tables to be captured.
 Triggers are created for the tables to be tracked. The trigger gets the id, operation and timestamp into a table  say <CapturedTableName>_CDC.
@@ -39,6 +39,8 @@ Lets see next approach.
 
 
 ## Approach 3: SQL CDC
+
+[\[Diagram for approach 1: CDC with SQL CDC\]](ms-sql-guide/diag_source/ms-sql-cdc-app.jpg)
 
 Similar to approach 2, the application writes  (insert, update, delete)  into the tables to be captured.
 CDC is enabled at DB and table level using system stored procedure sys.sp_cdc_enable_db and sys.sp_cdc_enable_table.
@@ -59,6 +61,8 @@ More details are here at [SQL CDC](https://docs.microsoft.com/en-us/sql/relation
 
 
 ## Approach 4: SQL Server Broker Service (SSSB)
+
+[\[Diagram for approach 1: CDC with SQL SSB\]](ms-sql-guide/diag_source/ms-sql-cdc-sssb.jpg)
 
 1. Similar to approach 2 or 3, the application writes (insert, update, delete) into the tables to be captured. 
 2. In this approach, SQL Service Broker is enabled and SQL broker objects viz Message Types, Contracts, Queues, Services, Trigger can be created and configured via a stable  .NET Library - SqlTableDepenency
