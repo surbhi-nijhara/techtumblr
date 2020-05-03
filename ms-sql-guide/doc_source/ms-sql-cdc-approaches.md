@@ -1,4 +1,4 @@
-# CDC Strategy in MS SQL Guide
+# Primer on CDC Strategy in MS SQL Guide
 
 ## Purpose
 The purpose of this guide is to approach a common business problem of tracking changes to the tables in SQL server. There could be use cases where an impact in one system needs to be propagated to another system in the business ecosystem. 
@@ -12,7 +12,7 @@ We have more than one way to approach this and this is a guide which will help g
 
 The following diagram shows the key components of the configuration for this scenario\.
 
-![\[Diagram for approach 1: CDC with App\]](ms-sql-guide/diag_source/ms-sql-cdc-app.jpg)
+![\[Diagram for approach 1: CDC with App\]](ms-sql-guide/diag_source/ms-sql-cdc-app.png)
 
 1. In this approach, as soon as an application service writes((insert, update, delete) into tables to be captured, the same application also publishes an event  into an event bus. The event may just contain id of the template, the operation(op) and timestamp. Alternatively, one may approach publishing the entire row if there is no need to join data from other tables. It will depend on your specific requirement.
 2. A SyncApp (a custom built transformation tool) will be subscribed to the event bus.
