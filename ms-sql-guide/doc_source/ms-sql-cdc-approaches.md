@@ -79,5 +79,5 @@ Summary of this approach is that it provides
 
 An argument could be that enabling SSSB and having SQL Server now perform additional mechanism of all that it goes into creation of all SQL broker objects like messages, queues, services, contracts etc., followed up by execution of this additional internal messaging mechanism, may impact the overall performance of SQL synchronous business transactions under pressure test.
 
-Checking with folks who have used SQL have given mixed feedback. For some, there has been no performance impact seen even when they have used service broker in uses cases like and that too data warehouse on a low configuration server. 
-Performance benefits can also be read in detail [here](https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2008/dd576261(v=sql.100).
+Checking with folks who have used SQL Service broker have given a good feedback. There has been no performance impact seen even when they have used service broker in uses cases like and that too data warehouse on a low configuration server. 
+Performance benefits can also be read in detail [here](https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2008/dd576261(v=sql.100)). Check for more responses [here](https://stackoverflow.com/questions/61590787/sql-server-service-broker-performance-impact).
