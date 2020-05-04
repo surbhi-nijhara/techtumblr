@@ -1,4 +1,4 @@
-# Primer on CDC Strategy in MS SQL Guide
+# Primer on CDC Strategy in MS SQL
 
 ## Purpose
 The purpose of this guide is to approach a common business problem of tracking changes to the tables in SQL server. 
