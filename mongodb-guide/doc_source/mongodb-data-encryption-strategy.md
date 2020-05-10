@@ -2,10 +2,10 @@
 
 ## Purpose
 The purpose of this document is to understand how data can be encrypted in Mongo database. 
-We will see encryption at client layer and the database layers. 
+We will see encryption at client side encryption and server side encryption. 
 
 
-![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/momgodb-encryption/diag_source/momgodb-encryption.jpg?raw=true)
+![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/mongodb-guide/diag_source/mongodb-encryption.jpg?raw=true)
 
 #### Client-Side Field Level Encryption: 
 ##### Methodology:
@@ -34,6 +34,7 @@ CMK in turn will be secured using KMS. Currently MongoDB driver natively support
 For multi-tenant systems, it is recommended separate CMK for each tenant. 
 
 
-#### Encryption at Rest: 
-MongoDB already supports disk Encryption at Rest by default.
+#### Server-Side Encryption
+Encryption at Rest: 
+MongoDBEnter preise version or cloud variant MongoAtlas supports disk Encryption at Rest by default.
 
