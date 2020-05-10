@@ -62,7 +62,7 @@ More details can be read here at [SQL CDC](https://docs.microsoft.com/en-us/sql/
 ![\[Diagram for approach 4: CDC with SQL SSB\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/ms-sql-guide/diag_source/ms-sql-cdc-sssb.jpg?raw=true)
 
 1. Similar to approach 2 and 3, the application writes (insert, update, delete) into the tables to be captured. 
-2. In this approach, SQL Service Broker is enabled and SQL broker-objects viz. Message Types, Contracts, Queues, Services and Trigger can be created and configured via a stable  .NET Library - SqlTableDepenency
+2. In this approach, SQL Service Broker is enabled and SQL broker-objects viz. Message Types, Contracts, Queues, Services and Trigger can be created and configured via a stable  .NET Library - [SqlTableDepenency](https://www.nuget.org/packages/SqlTableDependency/)
 3. SQL broker uses an external application as its activation procedure. The external application here is SyncApp.
 4. The SyncApp gets notified that a message is ready to be processed, which then takes it ahead, as explained in previous approaches.
 
@@ -78,3 +78,6 @@ An argument could be that enabling SSSB and having SQL Server now perform additi
 
 Folks who have used SQL Service broker have given good feedback. There has been no performance impact seen even when they have used service broker in use cases like data warehouse with SQL server configured on a relatively low-end machine. 
 Performance benefits can also be read in detail [here](https://docs.microsoft.com/en-us/previous-versions/sql/sql-server-2008/dd576261(v=sql.100)). Check for more responses [here](https://stackoverflow.com/questions/61590787/sql-server-service-broker-performance-impact).
+
+On a concluding note, one of the above four approaches should meet the business use case and constraint if any. 
+
