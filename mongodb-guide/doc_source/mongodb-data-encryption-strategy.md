@@ -8,7 +8,7 @@ We will see encryption at client side encryption and server side encryption.
 ![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/mongodb-guide/diag_source/mongodb-encryption.jpg?raw=true)
 
 #### Client-Side Field Level Encryption: 
-####Methodology:
+#### Methodology:
 
 
 Mongodb supports **Client-Side Encryption** and it provides the encryption at a field level granularity. 
@@ -32,7 +32,7 @@ b) **Database level**. If the client fails to encrypt the data, the driver will 
  Source: https://docs.mongodb.com/manual/core/security-client-side-encryption/
 
 
-####Keys:
+#### Keys:
 
 There are two types of keys that are used in encryption.
 
