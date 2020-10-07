@@ -64,9 +64,6 @@ CMK: Connection Configuration - https://docs.mongodb.com/manual/reference/method
 Secret Key is the key(and not CMK) used to encrypt data using AES algorithm. Though Customer provided keys (CMK) can also be used to encrypt the data, it is not practiced because of high computations and hence is slower than AES (symmetric). CMK encrypts secret key using RSA(assymetric) is a better practice as it is stronger.
 
 #### CS-FLE Challenges:
-
-
-
 This is regarding the discussed limitations while using AKV as the key store for client side field level encryption.
 Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.
 To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref: here.
