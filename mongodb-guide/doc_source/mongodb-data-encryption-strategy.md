@@ -62,31 +62,26 @@ For multi-tenant systems, it is recommended to use separate CMK for each tenant.
 CMK: Connection Configuration - https://docs.mongodb.com/manual/reference/method/KeyVault.createKey/
 
 
-#### CS-FLE Challenges:
-This is regarding the limitations while using zure Key Vault(AKV) as the key store for client side field level encryption.<br/>
-Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.<br/>
+#### Overall CS-FLE Challenges:
+Overall limitations while using zure Key Vault(AKV) as the key store for client side field level encryption are as follows.<br/>
+* Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.<br/>
 To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref: here.<br/>
 The local key store requires the key length as 96 bytes only. MongoDB documentation has demonstrated samples using Java SecureRandom() API to generate the keys. 
 By default, the algorithm used is SHA1PRNG and the other algorithms supported can be found here. However, all of them are essentially hashing algorithms and not encryption algorithms as AES-128/AES-256 etc. Ref: here<br/>
 Even other mentioned methods/tools like 'openssl' or 'dev urandom' used to generate the key for local key stores also use cryptographic randomness. <br/>
-
-
 TEST_LOCAL_KEY=$(echo "$(head -c 96 /dev/urandom | base64 | tr -d '\n')")<br/>
 mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'" <br/>
 OR <br/>
 openssl rand -base64 32 > mongodb-keyfile <br/>
-If AES-128/192/256 is generated and stored as secret in AKV, after retrieving the key, padding is needed in the client application to make it 96 byte length before passing it to the local store.<br/>
-Additionally, this generated key needs to be stored as a ‘Secret’ in AKV because the ‘Key’ in AKV only supports asymmetric keys (in RSA or EC format) and MongoDB uses a symmetric type of keyas master key. That the master key needs to be symmetric is derived from AWS key store documentation where a symmetric key is asked to be created in AWS KMS.
+
+* If AES-128/192/256 is generated and stored as secret in AKV, after retrieving the key, padding is needed in the client application to make it 96 byte length before passing it to the local store.<br/>
+
+* Additionally, this generated key needs to be stored as a ‘Secret’ in AKV because the ‘Key’ in AKV only supports asymmetric keys (in RSA or EC format).
 Storing the master key as secret will not allow key rotation and other key management policies.
  
-Also want to add that in Mongo CSFLE, only one CMK and not multiple CMKs can be used. 
-The reason being the key needs to be associated with the schema itself.
-This is a similar constraint as on using Always Encrypted feature (Client side encryption) on SQL DB.
-
+* While different fields can be configured using different keys, the same field for different values cannot be configured using different keys. i.e. Only one CMK and not multiple CMKs can be used to encrypt the **same** field values. The reason being the key needs to be associated with the schema itself.
 A DEK is created using a CMK and a KeyID is generated.
-
-The KeyId is configured with the fields in the schema. While different fields can be configured using different keys, it does not look like the same field for different values can be configured.
-Customer provided keys (CMK) can also be used to encrypt the data.
+The KeyId is configured with the fields in the schema. 
 
 
 #### Server-Side Encryption
