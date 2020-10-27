@@ -2,19 +2,39 @@
 
 ## Purpose
 The purpose of this document is to understand how data can be encrypted in Mongo database. Encryption can be done both at rest and at field level.
-In this part-1, we will see encryption at field level.
+In this blog, we will see encryption at field level.
 
+Let us first brush up the basic pre-requisites to understand the intended feature of encryption.
 
-#### Client-Side Field Level Encryption: 
-#### Methodology:
+#### Keys:
 
-Mongodb supports **Client-Side Encryption** and it provides the encryption at a field level granularity. <br/>
+There are two types of keys used in encryption of data.
+
+1) **Customer Master Key - CMK**
+
+2) **Data Encryption Key - DEK**
+
+Data Encryption key or simply Encryption keys is symmetric key. The client application deals with encryption and decryption of data using a DEK. 
+In the MongoDb context, Data Encryption Key is stored in MongoDB vault which is essentially a collection in Mongo DB. 
+
+DEK is secured using Customer Master Key (CMK). 
+CMK, in turn, is secured using [KMS](https://docs.mongodb.com/manual/core/security-client-side-encryption-key-management/). 
+
+Currently MongoDB driver natively supports only AWS KMS(preferred) or local KMS. For any other key manager, the approach is be to make KMS provider remote service calls and then be treated as local.<br/>
+<br/>
+
+Let us next see what is client side field encryption all about. 
+
+#### **Client Side Field Encryption** :
+
+Mongodb supports **Client Side Field Encryption** and it provides the encryption at a field level granularity. <br/>
+
 MongoDb Community and Enterprise edition supports manual field encryption, while automatic field encryption is only supported by Enterprise editions.<br/>
 Enterprise edition includes MongoAtlas (Cloud managed AmongoDB Enterprise editions).<br/>
 
 Lets first see <br/>
 **Automatic Field Encryption**:
-![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/mongodb-guide/diag_source/mongodb-encryption.jpg?raw=true)
+![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/field-encryption/mongodb-guide/diag_source/file-auto-encrypt-arch.png?raw=true)
 
 MongoDB Enterprise or MongoAtlas supports Automatic Client-Side Field Level Encryption with help of a daemon [mongocryptd](https://docs.mongodb.com/manual/reference/security-client-side-encryption-appendix/#mongocryptd). <br/>
 A Schema is required for [Automatic Field Level Encryption](https://docs.mongodb.com/manual/core/security-automatic-client-side-encryption/#field-level-encryption-automatic) which is represented in the extended version of JSON Schema. The schema contains the following information
@@ -42,21 +62,10 @@ The reference is (here)[https://docs.mongodb.com/manual/reference/security-clien
 
 
 **Manual Field Encryption**:
+
+![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/field-encryption/mongodb-guide/diag_source/field-encrypt-arch.png?raw=true)
+
 The sample code is (here)[the sample code is here. ]
-
-#### Keys:
-
-There are two types of keys that are used in encryption.
-
-1) **Customer Master Key - CMK**
-
-2) **Data Encryption Key - DEK**
-
-Data Encryption key is also called as secret key. The client Application will deal with encryption and decryption of data using a DEK. DEK will be secured using Customer Master Key (CMK). Data Encryption Key is stored in MongoDB vault. It is essentially saved as a collection in Mongo DB. 
-
-CMK in turn will be secured using [KMS](https://docs.mongodb.com/manual/core/security-client-side-encryption-key-management/). Currently MongoDB driver natively supports only AWS KMS(preferred) or local KMS. For any other key manager, the approach would be to make remote service calls and then be treated as local.<br/>
-<br/>
-For multi-tenant systems, it is recommended to use separate CMK for each tenant. 
 
 
 #### Overall CS-FLE Challenges:
