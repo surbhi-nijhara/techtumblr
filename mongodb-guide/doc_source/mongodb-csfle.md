@@ -71,13 +71,11 @@ The sample code is [here](https://github.com/paychex/mongo-csfl-encryption-java-
 
 ### Overall CS-FLE Challenges:
 Overall limitations while using zure Key Vault(AKV) as the key store for client side field level encryption are as follows.<br/>
-* Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.<br/>
-
-To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref: here.<br/>
+* Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: [here](https://docs.mongodb.com/manual/core/security-client-side-encryption-key-management/).<br/>
+To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref:[here](https://www.mongodb.com/blog/post/clientside-field-level-encryption-faq--webinar).<br/>
 
 * The local key store requires the key length as 96 bytes only. MongoDB documentation has demonstrated samples using Java SecureRandom() API to generate the keys. 
-
-By default, the algorithm used is SHA1PRNG and the other algorithms supported can be found here. However, all of them are essentially hashing algorithms and not encryption algorithms as AES-128/AES-256 etc. Ref: here<br/>
+By default, the algorithm used is SHA1PRNG and the other algorithms supported can be found [here](https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SecureRandom). However, all of them are essentially hashing algorithms and not encryption algorithms as AES-128/AES-256 etc. Ref: [here]()<br/>
 
 There are other methods/tools like 'openssl' or 'dev urandom'  to generate the key for local key stores using cryptographic randomness. <br/>
 TEST_LOCAL_KEY=$(echo "$(head -c 96 /dev/urandom | base64 | tr -d '\n')")<br/>
