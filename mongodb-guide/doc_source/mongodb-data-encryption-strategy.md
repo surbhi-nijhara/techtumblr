@@ -74,11 +74,12 @@ Overall limitations while using zure Key Vault(AKV) as the key store for client 
 * Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.<br/>
 
 To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref: here.<br/>
-The local key store requires the key length as 96 bytes only. MongoDB documentation has demonstrated samples using Java SecureRandom() API to generate the keys. 
+
+* The local key store requires the key length as 96 bytes only. MongoDB documentation has demonstrated samples using Java SecureRandom() API to generate the keys. 
 
 By default, the algorithm used is SHA1PRNG and the other algorithms supported can be found here. However, all of them are essentially hashing algorithms and not encryption algorithms as AES-128/AES-256 etc. Ref: here<br/>
 
-Even other mentioned methods/tools like 'openssl' or 'dev urandom' used to generate the key for local key stores also use cryptographic randomness. <br/>
+There are other methods/tools like 'openssl' or 'dev urandom'  to generate the key for local key stores using cryptographic randomness. <br/>
 TEST_LOCAL_KEY=$(echo "$(head -c 96 /dev/urandom | base64 | tr -d '\n')")<br/>
 mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'" <br/>
 OR <br/>
