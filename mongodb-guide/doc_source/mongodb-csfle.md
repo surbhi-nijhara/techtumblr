@@ -117,8 +117,8 @@ This command will output a value.<br/>
 With above, an encryption-test.__dataKeys", db.collection should get created.
 
 **Note:**<br/>
-If MongoAtlas is used, You won't be able to run --nodb --eval option in Mongo shell connection for Atlas since there is no access to local terminal or bash shell. execute eval command in Atlas is unsupported in Atlas.
-We need to use the compatible MongoDB driver to enable the client side application.for more information.
+If MongoAtlas is used, You won't be able to run --nodb --eval option in Mongo shell connection for Atlas since there is no access to local terminal or bash shell. Execute eval command in Atlas is unsupported in Atlas. Refer to d[ocumentation](https://docs.atlas.mongodb.com/reference/unsupported-commands-paid-tier-clusters/index.html).
+We need to use the compatible MongoDB driver to enable the client side application.Rrefer to the [documentation](https://docs.mongodb.com/manual/core/security-explicit-client-side-encryption/#explicit-manual-client-side-field-level-encryption). Also, kindly be aware of the known [limitations](https://docs.mongodb.com/manual/reference/security-client-side-encryption-limitations/).
 
 
 
