@@ -1,4 +1,4 @@
-# Data Encryption in Mongo DB
+# CSFLE in Mongo DB
 
 ## Purpose
 The purpose of this document is to understand how data can be encrypted in Mongo database. Encryption can be done both at rest and at field level.
@@ -42,9 +42,7 @@ The daemon should be installed on the host depending on its type viz VM or docke
 A Schema is required for [Automatic Field Level Encryption](https://docs.mongodb.com/manual/core/security-automatic-client-side-encryption/#field-level-encryption-automatic) which is represented in the extended version of JSON Schema. The schema contains the following information
 
 * The algorithm
-
 * The data encryption key
-
 * BSON Type of the field ( required for Deterministic Encrypted Fields).
 
 This schema can be configured at
