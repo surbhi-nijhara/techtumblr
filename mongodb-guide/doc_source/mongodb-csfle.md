@@ -1,12 +1,12 @@
 # CSFLE in Mongo DB
 
-## Purpose
+### Purpose
 The purpose of this document is to understand how data can be encrypted in Mongo database. Encryption can be done both at rest and at field level.
 In this blog, we will see what is encryption at field level, ways to encrypt, the steps to create keys and the feature challenges that we encountered.
 
 Let us first brush up the basic pre-requisites to understand the intended feature of encryption.
 
-#### Keys:
+### Keys:
 
 There are two types of keys used in encryption of data.
 
@@ -25,7 +25,7 @@ Currently MongoDB driver natively supports only AWS KMS(preferred) or local KMS.
 
 Let us next see what is client side field encryption all about. 
 
-#### **Client Side Field Encryption** :
+### **Client Side Field Encryption** :
 
 Mongodb supports **Client Side Field Encryption** and it provides the encryption at a field level granularity. <br/>
 
@@ -53,12 +53,12 @@ b)**Database level**: If the client fails to encrypt the data, the driver will r
 
 ![\[Diagram for Mongo Client Side Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/mongodb-guide/diag_source/mongodb-clientside-encrypt.png?raw=true)
 
-Source: https://docs.mongodb.com/manual/core/security-client-side-encryption/
+[Source](https://docs.mongodb.com/manual/core/security-client-side-encryption/)
 
 While automatic field level encryption seems the first and obvious choice given that it is less verbose, do check for following limitations early on to meet your business requirements. It restricts doing the following:<br/>
 a) Encrypting individual elements of an array is not possible at this time. The entire array field needs to be encrypted.<br/>
 b) Even if you are good with encryption entire array field, it does not allow the 'Deterministic' encryption type. Only 'Randomized is supported.'<br/>
-The reference is (here)[https://docs.mongodb.com/manual/reference/security-client-side-automatic-json-schema/].
+The reference is [here](https://docs.mongodb.com/manual/reference/security-client-side-automatic-json-schema/)
 
 
 **Manual Field Encryption**:
@@ -66,10 +66,10 @@ Manual Feild Encryption does not include the mongocryptd daemon and hence the ex
 
 ![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/field-encryption/mongodb-guide/diag_source/field-encrypt-arch.png?raw=true)
 
-The sample code is (here)[the sample code is here. ]
+The sample code is [here](https://github.com/paychex/mongo-csfl-encryption-java-demo)
 
 
-#### Overall CS-FLE Challenges:
+### Overall CS-FLE Challenges:
 Overall limitations while using zure Key Vault(AKV) as the key store for client side field level encryption are as follows.<br/>
 * Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: here.<br/>
 
@@ -94,18 +94,14 @@ Storing the master key as secret will not allow key rotation and other key manag
 A DEK is created using a CMK and a KeyID is generated.
 The KeyId is configured with the fields in the schema. 
 
-###Key Creation Steps
-Though Mongodb mention complete steps as (here)[https://docs.mongodb.com/manual/reference/method/KeyVault.createKey/#example], stating here the same with a small twist where assuming a customer managed key exists in Azure key vault, and a data encryption key has to be created. Azure CLI and Mongo shell can be used for the same.
+### Key Creation Steps
+Though Mongodb mentioned steps are [here](https://docs.mongodb.com/manual/reference/method/KeyVault.createKey/#example), stating the end-end steps where assuming a customer managed key exists in Azure key vault, and a data encryption key has to be created. Azure CLI and Mongo shell can be used for the same.
 
-1.  az login --service-principal --username <username> --password <password> --tenant <tenant-id>
- 
-2. az keyvault secret show --name "<column-masterkey-name>" --vault-name "<key vault name>"
-This command will output a value 
- 
-3. export TEST_LOCAL_KEY= <value from above>
- 
-4. mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'
- 
+1.  az login --service-principal --username <username> --password <password> --tenant <tenant-id><br/>
+2. az keyvault secret show --name "<column-masterkey-name>" --vault-name "<key vault name>"<br/>
+This command will output a value.<br/>
+3. export TEST_LOCAL_KEY= <value from above><br/>
+4. mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'<br/>
 5. var ClientSideFieldLevelEncryptionOptions = {
   "keyVaultNamespace" : "encryption-test.__dataKeys",
   "kmsProviders" : {
@@ -113,39 +109,18 @@ This command will output a value
       "key" : BinData(0, TEST_LOCAL_KEY)
     }
   }
-}
- 
- 
+}<br/>
 6. encryptedClient = Mongo(
-
   "mongodb+srv://<user>:<pw>@host",    -----> Change to the required connection uri
   ClientSideFieldLevelEncryptionOptions
- )
- 
- 
-7. keyVault = encryptedClient.getKeyVault()
- 
-8. keyVault.createKey("local", ["data-encryption-key"])
- 
- 
+ )<br/>
+7. keyVault = encryptedClient.getKeyVault()<br/>
+8. keyVault.createKey("local", ["data-encryption-key"])<br/>
 With above, an encryption-test.__dataKeys", db.collection should get created.
 
-If MongoAtlas is used, the mongo shell cannot be used n=and hence one of the supported SDKs should be used to create the keys.
-
-However, it looks like you won't be able to run --nodb --eval option in Mongo shell connection for Atlas since we don't have access to local terminal or bash shell. Is that feature limitation for Mongo Atlas?
-
-Yes, you cannot execute eval command in Atlas it is unsupported in Atlas. Please refer to our documentation.
-
-If so what's the alternative for setting up Client side encryption. Is that something that needs to be setup on Client side application? Any documentation you can provide regarding that?
-
-Yes, you need to use the compatible MongoDB driver to enable the client side application.for more information, please refer to the documentation. Also, kindly be aware of the known limitations.
-
-Running into issues on steps below when trying to create data encryption key on Mongo Shell. In this step we are loading master key value into local_key variable.
-
-
-
-#### Server-Side Encryption
-This will be covered in part 2.
+**Note:**<br/>
+If MongoAtlas is used, You won't be able to run --nodb --eval option in Mongo shell connection for Atlas since there is no access to local terminal or bash shell. execute eval command in Atlas is unsupported in Atlas.
+We need to use the compatible MongoDB driver to enable the client side application.for more information.
 
 
 
