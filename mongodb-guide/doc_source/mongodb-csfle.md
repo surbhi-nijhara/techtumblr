@@ -7,14 +7,11 @@ In this blog, we will see what is encryption at field level, ways to encrypt, th
 Let us first brush up the basic pre-requisites to understand the intended feature of encryption.
 
 ### Keys:
-
 There are two types of keys used in encryption of data.
-
 1) **Customer Master Key - CMK**
-
 2) **Data Encryption Key - DEK**
 
-Data Encryption key or simply Encryption keys is symmetric key. The client application deals with encryption and decryption of data using a DEK. 
+Data Encryption key(DEK) or simply Encryption key is a symmetric key. The client application deals with encryption and decryption of data using a DEK. 
 In the MongoDb context, Data Encryption Key is stored in MongoDB vault which is essentially a collection in Mongo DB. 
 
 DEK is secured using Customer Master Key (CMK). 
@@ -70,7 +67,7 @@ The sample code is [here](https://github.com/paychex/mongo-csfl-encryption-java-
 
 
 ### Overall CS-FLE Challenges:
-Overall limitations while using zure Key Vault(AKV) as the key store for client side field level encryption are as follows.<br/>
+Overall limitations while using Azure Key Vault(AKV) as the key store for client side field level encryption are as follows.<br/>
 * Currently MongoDB Atlas natively supports only AWS KMS and local keystore for client-side field level encryption. Ref: [here](https://docs.mongodb.com/manual/core/security-client-side-encryption-key-management/).<br/>
 To use Azure Key Vault(AKV) for the stored master encryption key, the encryption key needs to be fetched and proxied through local key store configuration for mongo drivers to understand. Ref:[here](https://www.mongodb.com/blog/post/clientside-field-level-encryption-faq--webinar).<br/>
 
@@ -78,12 +75,13 @@ To use Azure Key Vault(AKV) for the stored master encryption key, the encryption
 By default, the algorithm used is SHA1PRNG and the other algorithms supported can be found [here](https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#SecureRandom). However, all of them are essentially hashing algorithms and not encryption algorithms as AES-128/AES-256 etc. Ref: [here]()<br/>
 
 There are other methods/tools like 'openssl' or 'dev urandom'  to generate the key for local key stores using cryptographic randomness. <br/>
-TEST_LOCAL_KEY=$(echo "$(head -c 96 /dev/urandom | base64 | tr -d '\n')")<br/>
-mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'" <br/>
-OR <br/>
-openssl rand -base64 32 > mongodb-keyfile <br/>
+#### command:
+    TEST_LOCAL_KEY=$(echo "$(head -c 96 /dev/urandom | base64 | tr -d '\n')")<br/>
+    mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'" <br/>
+#### or
+    openssl rand -base64 32 > mongodb-keyfile <br/>
 
-* If AES-128/192/256 is generated and stored as secret in AKV, after retrieving the key, padding is needed in the client application to make it 96 byte length before passing it to the local store.<br/> However this is not needed and a secure random key generation of 96 bytes is recommended.
+* If AES-128/192/256 is generated and stored as secret in AKV, after retrieving the key, padding is needed in the client application to make it 96 byte length before passing it to the local store.<br/> However this is not needed and a secure random key generation of 96 bytes is recommended by MongoDB team.
 
 * Additionally, this generated key needs to be stored as a ‘Secret’ in AKV because the ‘Key’ in AKV only supports asymmetric keys (in RSA or EC format).
 Storing the master key as secret will not allow key rotation and other key management policies.
@@ -95,25 +93,32 @@ The KeyId is configured with the fields in the schema.
 ### Key Creation Steps
 Though Mongodb mentioned steps are [here](https://docs.mongodb.com/manual/reference/method/KeyVault.createKey/#example), stating the end-end steps where assuming a customer managed key exists in Azure key vault, and a data encryption key has to be created. Azure CLI and Mongo shell can be used for the same.
 
-1.  az login --service-principal --username <username> --password <password> --tenant <tenant-id><br/>
-2. az keyvault secret show --name "<column-masterkey-name>" --vault-name "<key vault name>"<br/>
+#### 1.Login into Azure
+    az login --service-principal --username <username> --password <password> --tenant <tenant-id><br/>
+#### 2. Get Secret Name 
+    az keyvault secret show --name "<column-masterkey-name>" --vault-name "<key vault name>"<br/>
 This command will output a value.<br/>
-3. export TEST_LOCAL_KEY= <value from above><br/>
-4. mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'<br/>
-5. var ClientSideFieldLevelEncryptionOptions = {
-  "keyVaultNamespace" : "encryption-test.__dataKeys",
-  "kmsProviders" : {
-    "local" : {
-      "key" : BinData(0, TEST_LOCAL_KEY)
+#### 3. Go to Shell
+    export TEST_LOCAL_KEY= <value from above><br/>
+####
+    mongo --nodb --shell --eval "var TEST_LOCAL_KEY='$TEST_LOCAL_KEY'<br/>
+    var ClientSideFieldLevelEncryptionOptions = {
+      "keyVaultNamespace" : "encryption-test.__dataKeys",
+      "kmsProviders" : {
+      "local" : {
+         "key" : BinData(0, TEST_LOCAL_KEY)
+      }
+     }
     }
-  }
-}<br/>
-6. encryptedClient = Mongo(
-  "mongodb+srv://<user>:<pw>@host",    -----> Change to the required connection uri
-  ClientSideFieldLevelEncryptionOptions
- )<br/>
-7. keyVault = encryptedClient.getKeyVault()<br/>
-8. keyVault.createKey("local", ["data-encryption-key"])<br/>
+####
+    encryptedClient = Mongo(
+    "mongodb+srv://<user>:<pw>@host",    -----> Change to the required connection uri
+    ClientSideFieldLevelEncryptionOptions
+    )
+####    
+    keyVault = encryptedClient.getKeyVault()<br/>
+####
+    keyVault.createKey("local", ["data-encryption-key"])<br/>
 With above, an encryption-test.__dataKeys", db.collection should get created.
 
 **Note:**<br/>
