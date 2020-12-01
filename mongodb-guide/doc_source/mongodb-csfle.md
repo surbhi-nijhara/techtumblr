@@ -45,21 +45,21 @@ A Schema is required for [Automatic Field Level Encryption](https://docs.mongodb
 This schema can be configured at
  
 a)**Client Application level**: This is enforced at the MongoDb driver level and automatically encrypts or decrypts the data. Example is [here](https://github.com/mongodb/mongo-java-driver/blob/master/driver-sync/src/examples/tour/ClientSideEncryptionAutoEncryptionSettingsTour.java) and can be seen line 80 onwards.<br/>
-
 b)**Database level**: If the client fails to encrypt the data, the driver will retrieve the schema configured on the server side and use it to perform automatic encryption.<br/>
 
 ![\[Diagram for Mongo Client Side Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/master/mongodb-guide/diag_source/mongodb-clientside-encrypt.png?raw=true)
 
 [Source](https://docs.mongodb.com/manual/core/security-client-side-encryption/)
 
+### Automatic FLE Challenges:
 While automatic field level encryption seems the first and obvious choice given that it is less verbose, do check for following limitations early on to meet your business requirements. It restricts doing the following:<br/>
 a) Encrypting individual elements of an array is not possible at this time. The entire array field needs to be encrypted.<br/>
 b) Even if you are good with encryption entire array field, it does not allow the 'Deterministic' encryption type. Only 'Randomized is supported.'<br/>
-The reference is [here](https://docs.mongodb.com/manual/reference/security-client-side-automatic-json-schema/)
+The reference is [here](https://docs.mongodb.com/manual/reference/security-client-side-automatic-json-schema/).
 
 
 **Manual Field Encryption**:
-Manual Feild Encryption does not include the mongocryptd daemon and hence the explicit encryption, decryption methids need to be called.
+Manual Field Encryption does not include the mongocryptd daemon and hence the explicit encryption, decryption methods need to be called.
 
 ![\[Diagram for Encryption:\]](https://github.com/surbhi-nijhara/techtumblr/blob/field-encryption/mongodb-guide/diag_source/field-encrypt-arch.png?raw=true)
 
